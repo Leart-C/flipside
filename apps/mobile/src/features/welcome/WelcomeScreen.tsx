@@ -9,9 +9,7 @@ export function WelcomeScreen() {
     <Screen>
       <View style={welcomeScreenStyles.content}>
         <Text style={welcomeScreenStyles.title}>Flipside</Text>
-        <Text style={welcomeScreenStyles.message}>
-          Every photo has a back.
-        </Text>
+        <Text style={welcomeScreenStyles.message}>Every photo has a back.</Text>
       </View>
     </Screen>
   );

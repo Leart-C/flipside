@@ -8,9 +8,5 @@ type ScreenProps = {
 };
 
 export function Screen({ children }: ScreenProps) {
-  return (
-    <SafeAreaView style={screenStyles.container}>
-      {children}
-    </SafeAreaView>
-  );
+  return <SafeAreaView style={screenStyles.container}>{children}</SafeAreaView>;
 }
