@@ -7,6 +7,7 @@ export const colors = {
   mutedText: "#8D8377",
 
   action: "#B45F39",
+  onAction: "#FFFFFF",
   border: "#D8CFC3",
 
   blackInk: "#29251F",
