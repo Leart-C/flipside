@@ -3,16 +3,11 @@ import { StyleSheet } from "react-native";
 import { colors } from "@/theme/colors";
 import { spacing } from "@/theme/spacing";
 
-export const welcomeScreenStyles = StyleSheet.create({
+export const turnOneOverScreenStyles = StyleSheet.create({
   content: {
     flex: 1,
-    paddingHorizontal: spacing.large,
-    paddingBottom: spacing.regular,
-  },
-  copy: {
-    flex: 1,
-    alignItems: "center",
     justifyContent: "center",
+    paddingHorizontal: spacing.large,
   },
   title: {
     color: colors.text,
@@ -23,5 +18,6 @@ export const welcomeScreenStyles = StyleSheet.create({
     marginTop: spacing.medium,
     color: colors.mutedText,
     fontSize: 18,
+    lineHeight: 26,
   },
 });
