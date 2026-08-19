@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 
 import { colors } from "@/theme/colors";
+import { spacing } from "@/theme/spacing";
 
 export default function Index() {
   return (
@@ -24,7 +25,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   message: {
-    marginTop: 12,
+    marginTop: spacing.medium,
     color: colors.mutedText,
     fontSize: 18,
   },
