@@ -1,10 +1,20 @@
-import { Image } from "expo-image";
 import { useRouter } from "expo-router";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { useState } from "react";
+import {
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  Text,
+  View,
+} from "react-native";
 
 import { Screen } from "@/components/layout/Screen";
+import { useOnboardingPreferences } from "@/features/onboarding/OnboardingPreferencesProvider";
 import { colors } from "@/theme/colors";
+import { fontFamilies } from "@/theme/fonts";
 
+import { MemoryWritingCard } from "./components/MemoryWritingCard";
 import { useSelectedPhoto } from "./hooks/useSelectedPhoto";
 import { writeMemoryScreenStyles } from "./WriteMemoryScreen.styles";
 
@@ -14,20 +24,27 @@ type WriteMemoryScreenProps = {
 
 export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
   const router = useRouter();
-  const { error, isLoading, uri } = useSelectedPhoto(photoId);
+  const { selectedHandwriting } = useOnboardingPreferences();
+  const { error, isLoading } = useSelectedPhoto(photoId);
+
+  const [message, setMessage] = useState("");
 
   return (
     <Screen>
-      <View style={writeMemoryScreenStyles.content}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={writeMemoryScreenStyles.content}
+      >
         <Pressable
           accessibilityLabel="Return to photo library"
           accessibilityRole="button"
           onPress={() => router.back()}
           style={writeMemoryScreenStyles.backButton}
         >
-          <Text style={writeMemoryScreenStyles.backLabel}>Back</Text>
+          <Text style={writeMemoryScreenStyles.backLabel}>Photos</Text>
         </Pressable>
-        <Text style={writeMemoryScreenStyles.title}>Your photo</Text>
+
+        <Text style={writeMemoryScreenStyles.title}>The blank back</Text>
 
         {isLoading && <ActivityIndicator color={colors.action} />}
 
@@ -37,17 +54,16 @@ export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
           </Text>
         )}
 
-        {!isLoading && !error && uri && (
-          <View style={writeMemoryScreenStyles.photoFrame}>
-            <Image
-              accessibilityLabel="Selected memory photo"
-              contentFit="cover"
-              source={{ uri }}
-              style={writeMemoryScreenStyles.photo}
-            />
-          </View>
+        {!isLoading && !error && (
+          <MemoryWritingCard
+            fontFamily={fontFamilies[selectedHandwriting]}
+            message={message}
+            onMessageChange={setMessage}
+          />
         )}
-      </View>
+
+        <View style={writeMemoryScreenStyles.keyboardSpace} />
+      </KeyboardAvoidingView>
     </Screen>
   );
 }

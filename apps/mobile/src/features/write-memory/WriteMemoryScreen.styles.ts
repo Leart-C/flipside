@@ -26,17 +26,9 @@ export const writeMemoryScreenStyles = StyleSheet.create({
     fontSize: 36,
     fontWeight: "600",
   },
-  photoFrame: {
-    width: "100%",
-    aspectRatio: 4 / 5,
-    padding: spacing.small,
-    backgroundColor: colors.paper,
-    borderColor: colors.border,
-    borderWidth: 1,
-  },
-  photo: {
-    height: "100%",
-    width: "100%",
+  keyboardSpace: {
+    flex: 1,
+    minHeight: spacing.regular,
   },
   errorMessage: {
     color: colors.redInk,
