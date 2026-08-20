@@ -10,6 +10,7 @@ import { PhotoLibraryPermissionPrompt } from "./components/PhotoLibraryPermissio
 import { usePhotoLibraryPermission } from "./hooks/usePhotoLibraryPermission";
 import { usePhotoLibraryPhotos } from "./hooks/usePhotoLibraryPhotos";
 import { photoLibraryScreenStyles } from "./PhotoLibraryScreen.styles";
+import { usePhotoLibraryRevision } from "./hooks/usePhotoLibraryRevision";
 import type { PhotoLibraryFilter as PhotoLibraryFilterValue } from "./types/PhotoLibraryFilter";
 
 export function PhotoLibraryScreen() {
@@ -28,11 +29,13 @@ export function PhotoLibraryScreen() {
     status,
   } = usePhotoLibraryPermission();
 
+  const photoLibraryRevision = usePhotoLibraryRevision(hasAccess);
+
   const {
     error: photosFailed,
     isLoading: photosLoading,
     photos,
-  } = usePhotoLibraryPhotos(hasAccess, selectedFilter);
+  } = usePhotoLibraryPhotos(hasAccess, selectedFilter, photoLibraryRevision);
 
   const mustOpenSettings = status === "denied" && !canAskAgain;
 

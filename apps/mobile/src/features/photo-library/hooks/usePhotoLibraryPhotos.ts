@@ -68,6 +68,7 @@ async function createPhoto(asset: Asset): Promise<PhotoLibraryPhoto> {
 export function usePhotoLibraryPhotos(
   hasAccess: boolean,
   filter: PhotoLibraryFilter,
+  revision: number,
 ) {
   const [state, setState] = useState<PhotoLibraryPhotosState>(loadingState);
 
@@ -108,7 +109,7 @@ export function usePhotoLibraryPhotos(
     return () => {
       isActive = false;
     };
-  }, [filter, hasAccess]);
+  }, [filter, hasAccess, revision]);
 
   if (!hasAccess) {
     return noAccessState;
