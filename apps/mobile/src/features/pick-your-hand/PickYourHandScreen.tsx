@@ -1,11 +1,21 @@
+import { useState } from "react";
 import { Text, View } from "react-native";
 
+import { HandwritingOption } from "@/components/handwriting/HandwritingOption";
 import { Screen } from "@/components/layout/Screen";
 import { OnboardingProgress } from "@/components/onboarding/OnboardingProgress";
 
+import { type HandwritingId, handwritingOptions } from "./handwritingOptions";
 import { pickYourHandScreenStyles } from "./PickYourHandScreen.styles";
 
 export function PickYourHandScreen() {
+  const [selectedHandwriting, setSelectedHandwriting] =
+    useState<HandwritingId>("note");
+
+  function handleHandwritingSelect(handwritingId: HandwritingId) {
+    setSelectedHandwriting(handwritingId);
+  }
+
   return (
     <Screen>
       <View style={pickYourHandScreenStyles.content}>
@@ -17,6 +27,20 @@ export function PickYourHandScreen() {
             Whatever you choose becomes your default. You can change it on any
             photo, any time
           </Text>
+        </View>
+
+        <View
+          accessibilityRole="radiogroup"
+          style={pickYourHandScreenStyles.options}
+        >
+          {handwritingOptions.map((option) => (
+            <HandwritingOption
+              key={option.id}
+              onSelect={handleHandwritingSelect}
+              option={option}
+              selected={selectedHandwriting === option.id}
+            />
+          ))}
         </View>
       </View>
     </Screen>

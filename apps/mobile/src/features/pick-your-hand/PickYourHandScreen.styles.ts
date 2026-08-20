@@ -23,4 +23,8 @@ export const pickYourHandScreenStyles = StyleSheet.create({
     fontSize: 18,
     lineHeight: 26,
   },
+  options: {
+    gap: spacing.medium,
+    marginTop: spacing.large,
+  },
 });
