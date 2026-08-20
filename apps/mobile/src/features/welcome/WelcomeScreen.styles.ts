@@ -8,6 +8,7 @@ export const welcomeScreenStyles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: spacing.large,
     paddingBottom: spacing.regular,
+    paddingTop: spacing.regular,
   },
   copy: {
     flex: 1,

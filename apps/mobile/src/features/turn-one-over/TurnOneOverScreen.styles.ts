@@ -6,8 +6,12 @@ import { spacing } from "@/theme/spacing";
 export const turnOneOverScreenStyles = StyleSheet.create({
   content: {
     flex: 1,
-    justifyContent: "center",
+    paddingTop: spacing.regular,
     paddingHorizontal: spacing.large,
+  },
+  copy: {
+    flex: 1,
+    justifyContent: "center",
   },
   title: {
     color: colors.text,
