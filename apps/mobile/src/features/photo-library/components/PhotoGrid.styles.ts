@@ -5,7 +5,7 @@ import { spacing } from "@/theme/spacing";
 export const photoGridStyles = StyleSheet.create({
   list: {
     alignSelf: "stretch",
-    marginTop: spacing.large,
+    marginTop: spacing.regular,
   },
   content: {
     gap: spacing.tiny,

@@ -5,12 +5,21 @@ import { Screen } from "@/components/layout/Screen";
 import { colors } from "@/theme/colors";
 
 import { PhotoGrid } from "./components/PhotoGrid";
+import { PhotoLibraryFilter } from "./components/PhotoLibraryFilter";
 import { PhotoLibraryPermissionPrompt } from "./components/PhotoLibraryPermissionPrompt";
 import { usePhotoLibraryPermission } from "./hooks/usePhotoLibraryPermission";
 import { usePhotoLibraryPhotos } from "./hooks/usePhotoLibraryPhotos";
 import { photoLibraryScreenStyles } from "./PhotoLibraryScreen.styles";
+import type { PhotoLibraryFilter as PhotoLibraryFilterValue } from "./types/PhotoLibraryFilter";
 
 export function PhotoLibraryScreen() {
+  const [selectedFilter, setSelectedFilter] =
+    useState<PhotoLibraryFilterValue>("recents");
+
+  const [isRequestingPermission, setIsRequestingPermission] = useState(false);
+
+  const [permissionRequestFailed, setPermissionRequestFailed] = useState(false);
+
   const {
     canAskAgain,
     hasAccess,
@@ -23,10 +32,7 @@ export function PhotoLibraryScreen() {
     error: photosFailed,
     isLoading: photosLoading,
     photos,
-  } = usePhotoLibraryPhotos(hasAccess);
-
-  const [isRequestingPermission, setIsRequestingPermission] = useState(false);
-  const [permissionRequestFailed, setPermissionRequestFailed] = useState(false);
+  } = usePhotoLibraryPhotos(hasAccess, selectedFilter);
 
   const mustOpenSettings = status === "denied" && !canAskAgain;
 
@@ -56,10 +62,15 @@ export function PhotoLibraryScreen() {
           From your library — pick one to write on.
         </Text>
 
+        {!isPermissionLoading && hasAccess && (
+          <PhotoLibraryFilter
+            onSelect={setSelectedFilter}
+            selectedFilter={selectedFilter}
+          />
+        )}
+
         <View style={photoLibraryScreenStyles.permissionArea}>
-          {isPermissionLoading && (
-            <ActivityIndicator color={colors.action} />
-          )}
+          {isPermissionLoading && <ActivityIndicator color={colors.action} />}
 
           {!isPermissionLoading && !hasAccess && (
             <PhotoLibraryPermissionPrompt
@@ -103,10 +114,7 @@ export function PhotoLibraryScreen() {
             hasAccess &&
             !photosLoading &&
             !photosFailed && (
-              <PhotoGrid
-                onBrowse={handleOpenSettings}
-                photos={photos}
-              />
+              <PhotoGrid onBrowse={handleOpenSettings} photos={photos} />
             )}
         </View>
       </View>
