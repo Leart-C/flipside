@@ -6,11 +6,23 @@ import { colors } from "@/theme/colors";
 
 import { PhotoLibraryPermissionPrompt } from "./components/PhotoLibraryPermissionPrompt";
 import { usePhotoLibraryPermission } from "./hooks/usePhotoLibraryPermission";
+import { usePhotoLibraryPhotos } from "./hooks/usePhotoLibraryPhotos";
 import { photoLibraryScreenStyles } from "./PhotoLibraryScreen.styles";
 
 export function PhotoLibraryScreen() {
-  const { canAskAgain, hasAccess, isLoading, requestPermission, status } =
-    usePhotoLibraryPermission();
+  const {
+    canAskAgain,
+    hasAccess,
+    isLoading: isPermissionLoading,
+    requestPermission,
+    status,
+  } = usePhotoLibraryPermission();
+
+  const {
+    error: photosFailed,
+    isLoading: photosLoading,
+    photos,
+  } = usePhotoLibraryPhotos(hasAccess);
 
   const [isRequestingPermission, setIsRequestingPermission] = useState(false);
   const [permissionRequestFailed, setPermissionRequestFailed] = useState(false);
@@ -38,20 +50,15 @@ export function PhotoLibraryScreen() {
     <Screen>
       <View style={photoLibraryScreenStyles.content}>
         <Text style={photoLibraryScreenStyles.title}>Choose a photo</Text>
+
         <Text style={photoLibraryScreenStyles.message}>
           From your library — pick one to write on.
         </Text>
 
         <View style={photoLibraryScreenStyles.permissionArea}>
-          {isLoading && <ActivityIndicator color={colors.action} />}
+          {isPermissionLoading && <ActivityIndicator color={colors.action} />}
 
-          {!isLoading && hasAccess && (
-            <Text style={photoLibraryScreenStyles.grantedMessage}>
-              Photo access granted.
-            </Text>
-          )}
-
-          {!isLoading && !hasAccess && (
+          {!isPermissionLoading && !hasAccess && (
             <PhotoLibraryPermissionPrompt
               actionLabel={
                 mustOpenSettings
@@ -78,6 +85,27 @@ export function PhotoLibraryScreen() {
               }
             />
           )}
+
+          {!isPermissionLoading && hasAccess && photosLoading && (
+            <ActivityIndicator color={colors.action} />
+          )}
+
+          {!isPermissionLoading && hasAccess && photosFailed && (
+            <Text style={photoLibraryScreenStyles.errorMessage}>
+              We couldn&apos;t load your photos. Please try again.
+            </Text>
+          )}
+
+          {!isPermissionLoading &&
+            hasAccess &&
+            !photosLoading &&
+            !photosFailed && (
+              <Text style={photoLibraryScreenStyles.grantedMessage}>
+                {photos.length === 0
+                  ? "No photos found."
+                  : `${photos.length} photos ready.`}
+              </Text>
+            )}
         </View>
       </View>
     </Screen>

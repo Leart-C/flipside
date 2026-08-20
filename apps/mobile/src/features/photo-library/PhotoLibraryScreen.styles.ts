@@ -30,4 +30,10 @@ export const photoLibraryScreenStyles = StyleSheet.create({
     color: colors.mutedText,
     fontSize: 16,
   },
+  errorMessage: {
+    color: colors.redInk,
+    fontSize: 16,
+    lineHeight: 24,
+    textAlign: "center",
+  },
 });
