@@ -26,6 +26,7 @@ type PhotoGridItem =
 type PhotoGridProps = {
   browseDisabled: boolean;
   onBrowse: () => void;
+  onPhotoSelect: (photo: PhotoLibraryPhoto) => void;
   photos: PhotoLibraryPhoto[];
   showBrowseTiles: boolean;
 };
@@ -60,6 +61,7 @@ function createGridItems(
 export function PhotoGrid({
   browseDisabled,
   onBrowse,
+  onPhotoSelect,
   photos,
   showBrowseTiles,
 }: PhotoGridProps) {
@@ -80,7 +82,11 @@ export function PhotoGrid({
       numColumns={COLUMN_COUNT}
       renderItem={({ item }) =>
         item.type === "photo" ? (
-          <PhotoThumbnail photo={item.photo} size={photoSize} />
+          <PhotoThumbnail
+            photo={item.photo}
+            size={photoSize}
+            onPress={() => onPhotoSelect(item.photo)}
+          />
         ) : (
           <PhotoBrowseTile
             disabled={browseDisabled}

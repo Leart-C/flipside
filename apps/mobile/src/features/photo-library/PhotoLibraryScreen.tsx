@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { ActivityIndicator, Linking, Text, View } from "react-native";
-
+import { useRouter } from "expo-router";
 import { Screen } from "@/components/layout/Screen";
 import { colors } from "@/theme/colors";
-
+import type { PhotoLibraryPhoto } from "./types/PhotoLibraryPhoto";
 import { PhotoGrid } from "./components/PhotoGrid";
 import { PhotoLibraryFilter } from "./components/PhotoLibraryFilter";
 import { PhotoLibraryPermissionPrompt } from "./components/PhotoLibraryPermissionPrompt";
@@ -17,6 +17,8 @@ import type { PhotoLibraryFilter as PhotoLibraryFilterValue } from "./types/Phot
 export function PhotoLibraryScreen() {
   const [selectedFilter, setSelectedFilter] =
     useState<PhotoLibraryFilterValue>("recents");
+
+  const router = useRouter();
 
   const [isRequestingPermission, setIsRequestingPermission] = useState(false);
 
@@ -63,6 +65,15 @@ export function PhotoLibraryScreen() {
 
   function handleOpenSettings() {
     void Linking.openSettings();
+  }
+
+  function handlePhotoSelect(photo: PhotoLibraryPhoto) {
+    router.push({
+      pathname: "/write",
+      params: {
+        photoId: photo.id,
+      },
+    });
   }
 
   return (
@@ -137,6 +148,7 @@ export function PhotoLibraryScreen() {
                 onBrowse={() => {
                   void manageAccess();
                 }}
+                onPhotoSelect={handlePhotoSelect}
                 photos={photos}
                 showBrowseTiles={canManageAccess}
               />
