@@ -23,12 +23,12 @@ export const photoLibraryScreenStyles = StyleSheet.create({
   },
   permissionArea: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
   },
   grantedMessage: {
+    marginTop: spacing.huge,
     color: colors.mutedText,
     fontSize: 16,
+    textAlign: "center",
   },
   errorMessage: {
     color: colors.redInk,

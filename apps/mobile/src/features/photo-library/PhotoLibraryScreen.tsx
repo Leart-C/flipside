@@ -4,6 +4,7 @@ import { ActivityIndicator, Linking, Text, View } from "react-native";
 import { Screen } from "@/components/layout/Screen";
 import { colors } from "@/theme/colors";
 
+import { PhotoGrid } from "./components/PhotoGrid";
 import { PhotoLibraryPermissionPrompt } from "./components/PhotoLibraryPermissionPrompt";
 import { usePhotoLibraryPermission } from "./hooks/usePhotoLibraryPermission";
 import { usePhotoLibraryPhotos } from "./hooks/usePhotoLibraryPhotos";
@@ -56,7 +57,9 @@ export function PhotoLibraryScreen() {
         </Text>
 
         <View style={photoLibraryScreenStyles.permissionArea}>
-          {isPermissionLoading && <ActivityIndicator color={colors.action} />}
+          {isPermissionLoading && (
+            <ActivityIndicator color={colors.action} />
+          )}
 
           {!isPermissionLoading && !hasAccess && (
             <PhotoLibraryPermissionPrompt
@@ -100,11 +103,10 @@ export function PhotoLibraryScreen() {
             hasAccess &&
             !photosLoading &&
             !photosFailed && (
-              <Text style={photoLibraryScreenStyles.grantedMessage}>
-                {photos.length === 0
-                  ? "No photos found."
-                  : `${photos.length} photos ready.`}
-              </Text>
+              <PhotoGrid
+                onBrowse={handleOpenSettings}
+                photos={photos}
+              />
             )}
         </View>
       </View>

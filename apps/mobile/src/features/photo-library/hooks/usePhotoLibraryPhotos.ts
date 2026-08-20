@@ -1,17 +1,14 @@
-import {
-  AssetField,
-  type AssetMetadata,
-  MediaType,
-  Query,
-} from "expo-media-library";
+import { AssetField, MediaType, Query, type Asset } from "expo-media-library";
 import { useEffect, useState } from "react";
+
+import type { PhotoLibraryPhoto } from "../types/PhotoLibraryPhoto";
 
 const PHOTO_PAGE_SIZE = 30;
 
 type PhotoLibraryPhotosState = {
   error: boolean;
   isLoading: boolean;
-  photos: AssetMetadata[];
+  photos: PhotoLibraryPhoto[];
 };
 
 const noAccessState: PhotoLibraryPhotosState = {
@@ -26,6 +23,19 @@ const loadingState: PhotoLibraryPhotosState = {
   photos: [],
 };
 
+async function createPhoto(asset: Asset): Promise<PhotoLibraryPhoto> {
+  const [filename, uri] = await Promise.all([
+    asset.getFilename(),
+    asset.getUri(),
+  ]);
+
+  return {
+    id: asset.id,
+    filename,
+    uri,
+  };
+}
+
 export function usePhotoLibraryPhotos(hasAccess: boolean) {
   const [state, setState] = useState<PhotoLibraryPhotosState>(loadingState);
 
@@ -38,14 +48,16 @@ export function usePhotoLibraryPhotos(hasAccess: boolean) {
 
     async function loadPhotos() {
       try {
-        const photos = await new Query()
+        const assets = await new Query()
           .eq(AssetField.MEDIA_TYPE, MediaType.IMAGE)
           .orderBy({
             key: AssetField.CREATION_TIME,
             ascending: false,
           })
           .limit(PHOTO_PAGE_SIZE)
-          .exeForMetadata();
+          .exe();
+
+        const photos = await Promise.all(assets.map(createPhoto));
 
         if (isActive) {
           setState({
