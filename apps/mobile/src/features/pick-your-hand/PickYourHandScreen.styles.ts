@@ -3,11 +3,10 @@ import { StyleSheet } from "react-native";
 import { colors } from "@/theme/colors";
 import { spacing } from "@/theme/spacing";
 
-export const turnOneOverScreenStyles = StyleSheet.create({
+export const pickYourHandScreenStyles = StyleSheet.create({
   content: {
     flex: 1,
     paddingTop: spacing.regular,
-    paddingBottom: spacing.regular,
     paddingHorizontal: spacing.large,
   },
   copy: {
@@ -23,14 +22,5 @@ export const turnOneOverScreenStyles = StyleSheet.create({
     color: colors.mutedText,
     fontSize: 18,
     lineHeight: 26,
-  },
-  memoryArea: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  memoryCard: {
-    width: "72%",
-    maxWidth: 320,
   },
 });
