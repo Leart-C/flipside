@@ -24,12 +24,15 @@ type PhotoGridItem =
     };
 
 type PhotoGridProps = {
+  browseDisabled: boolean;
   onBrowse: () => void;
   photos: PhotoLibraryPhoto[];
+  showBrowseTiles: boolean;
 };
 
 function createGridItems(
   photos: PhotoLibraryPhoto[],
+  showBrowseTiles: boolean,
 ): PhotoGridItem[] {
   const photoItems: PhotoGridItem[] = photos.map((photo) => ({
     id: photo.id,
@@ -37,10 +40,11 @@ function createGridItems(
     type: "photo",
   }));
 
-  const browseItemCount = Math.max(
-    GRID_SLOT_COUNT - photoItems.length,
-    0,
-  );
+  if (!showBrowseTiles) {
+    return photoItems;
+  }
+
+  const browseItemCount = Math.max(GRID_SLOT_COUNT - photoItems.length, 0);
 
   const browseItems: PhotoGridItem[] = Array.from(
     { length: browseItemCount },
@@ -54,8 +58,10 @@ function createGridItems(
 }
 
 export function PhotoGrid({
+  browseDisabled,
   onBrowse,
   photos,
+  showBrowseTiles,
 }: PhotoGridProps) {
   const { width: screenWidth } = useWindowDimensions();
 
@@ -63,7 +69,7 @@ export function PhotoGrid({
     screenWidth - HORIZONTAL_SCREEN_PADDING - TOTAL_COLUMN_GAP;
 
   const photoSize = Math.floor(availableWidth / COLUMN_COUNT);
-  const gridItems = createGridItems(photos);
+  const gridItems = createGridItems(photos, showBrowseTiles);
 
   return (
     <FlatList
@@ -76,7 +82,11 @@ export function PhotoGrid({
         item.type === "photo" ? (
           <PhotoThumbnail photo={item.photo} size={photoSize} />
         ) : (
-          <PhotoBrowseTile onPress={onBrowse} size={photoSize} />
+          <PhotoBrowseTile
+            disabled={browseDisabled}
+            onPress={onBrowse}
+            size={photoSize}
+          />
         )
       }
       showsVerticalScrollIndicator={false}

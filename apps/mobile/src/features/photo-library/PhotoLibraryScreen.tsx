@@ -11,6 +11,7 @@ import { usePhotoLibraryPermission } from "./hooks/usePhotoLibraryPermission";
 import { usePhotoLibraryPhotos } from "./hooks/usePhotoLibraryPhotos";
 import { photoLibraryScreenStyles } from "./PhotoLibraryScreen.styles";
 import { usePhotoLibraryRevision } from "./hooks/usePhotoLibraryRevision";
+import { useManagePhotoLibraryAccess } from "./hooks/useManagePhotoLibraryAccess";
 import type { PhotoLibraryFilter as PhotoLibraryFilterValue } from "./types/PhotoLibraryFilter";
 
 export function PhotoLibraryScreen() {
@@ -22,6 +23,7 @@ export function PhotoLibraryScreen() {
   const [permissionRequestFailed, setPermissionRequestFailed] = useState(false);
 
   const {
+    accessPrivileges,
     canAskAgain,
     hasAccess,
     isLoading: isPermissionLoading,
@@ -30,6 +32,13 @@ export function PhotoLibraryScreen() {
   } = usePhotoLibraryPermission();
 
   const photoLibraryRevision = usePhotoLibraryRevision(hasAccess);
+
+  const {
+    canManageAccess,
+    isManagingAccess,
+    manageAccess,
+    manageAccessFailed,
+  } = useManagePhotoLibraryAccess(accessPrivileges);
 
   const {
     error: photosFailed,
@@ -113,11 +122,24 @@ export function PhotoLibraryScreen() {
             </Text>
           )}
 
+          {!isPermissionLoading && hasAccess && manageAccessFailed && (
+            <Text style={photoLibraryScreenStyles.errorMessage}>
+              Flipside couldn&apos;t open photo selection. Please try again.
+            </Text>
+          )}
+
           {!isPermissionLoading &&
             hasAccess &&
             !photosLoading &&
             !photosFailed && (
-              <PhotoGrid onBrowse={handleOpenSettings} photos={photos} />
+              <PhotoGrid
+                browseDisabled={isManagingAccess}
+                onBrowse={() => {
+                  void manageAccess();
+                }}
+                photos={photos}
+                showBrowseTiles={canManageAccess}
+              />
             )}
         </View>
       </View>
