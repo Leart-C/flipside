@@ -8,7 +8,7 @@ import { OnboardingProgress } from "@/components/onboarding/OnboardingProgress";
 import type { HandwritingId } from "@/domain/handwriting";
 import { useOnboardingPreferences } from "@/features/onboarding/OnboardingPreferencesProvider";
 
-import { handwritingOptions } from "./handwritingOptions";
+import { handwritingOptions } from "@/components/handwriting/handwritingOptions";
 import { pickYourHandScreenStyles } from "./PickYourHandScreen.styles";
 
 export function PickYourHandScreen() {

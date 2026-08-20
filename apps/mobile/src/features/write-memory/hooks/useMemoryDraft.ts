@@ -78,9 +78,24 @@ export function useMemoryDraft(
     });
   }
 
+  function chooseHandwriting(handwriting: HandwritingId) {
+    setStoredDraft((currentDraft) => {
+      const activeDraft =
+        currentDraft.photoId === photoId
+          ? currentDraft
+          : createMemoryDraft(photoId, initialHandwriting);
+
+      return {
+        ...activeDraft,
+        handwriting,
+      };
+    });
+  }
+
   return {
     chooseInkColor,
     chooseTextSize,
+    chooseHandwriting,
     draft,
     updateMessage,
   };

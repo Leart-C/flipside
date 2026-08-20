@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { MemoryTextSizeControl } from "./components/MemoryTextSizeControl";
 import { getMemoryTextSize } from "./memoryTextSizeOptions";
-
+import { MemoryHandwritingPicker } from "./components/MemoryHandwritingPicker";
 import { Screen } from "@/components/layout/Screen";
 import { useOnboardingPreferences } from "@/features/onboarding/OnboardingPreferencesProvider";
 import { colors } from "@/theme/colors";
@@ -28,8 +28,13 @@ type WriteMemoryScreenProps = {
 export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
   const router = useRouter();
   const { selectedHandwriting } = useOnboardingPreferences();
-  const { chooseInkColor, chooseTextSize, draft, updateMessage } =
-    useMemoryDraft(photoId, selectedHandwriting);
+  const {
+    chooseInkColor,
+    chooseTextSize,
+    draft,
+    updateMessage,
+    chooseHandwriting,
+  } = useMemoryDraft(photoId, selectedHandwriting);
 
   const inkColor = getMemoryInkColor(draft.inkColor);
   const textSize = getMemoryTextSize(draft.textSize);
@@ -73,15 +78,22 @@ export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
 
         {!isLoading && !error && (
           <View style={writeMemoryScreenStyles.controls}>
-            <MemoryInkPicker
-              onSelect={chooseInkColor}
-              selectedInkColor={draft.inkColor}
+            <MemoryHandwritingPicker
+              onSelect={chooseHandwriting}
+              selectedHandwriting={draft.handwriting}
             />
 
-            <MemoryTextSizeControl
-              onSelect={chooseTextSize}
-              selectedTextSize={draft.textSize}
-            />
+            <View style={writeMemoryScreenStyles.secondaryControls}>
+              <MemoryInkPicker
+                onSelect={chooseInkColor}
+                selectedInkColor={draft.inkColor}
+              />
+
+              <MemoryTextSizeControl
+                onSelect={chooseTextSize}
+                selectedTextSize={draft.textSize}
+              />
+            </View>
           </View>
         )}
         <View style={writeMemoryScreenStyles.keyboardSpace} />
