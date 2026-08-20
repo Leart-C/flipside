@@ -3,6 +3,11 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "dependencies": {
+    "@expo-google-fonts/allura": "^0.4.2",
+    "@expo-google-fonts/caveat": "^0.4.2",
+    "@expo-google-fonts/courier-prime": "^0.4.1",
+    "@expo-google-fonts/lora": "^0.4.2",
+    "@expo-google-fonts/patrick-hand": "^0.4.1",
     "@expo/ui": "~57.0.11",
     "expo": "~57.0.14",
     "expo-constants": "~57.0.12",
