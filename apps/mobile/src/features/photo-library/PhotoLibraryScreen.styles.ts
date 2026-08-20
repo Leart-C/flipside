@@ -21,4 +21,13 @@ export const photoLibraryScreenStyles = StyleSheet.create({
     fontStyle: "italic",
     lineHeight: 26,
   },
+  permissionArea: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  grantedMessage: {
+    color: colors.mutedText,
+    fontSize: 16,
+  },
 });
