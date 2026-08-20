@@ -1,24 +1,31 @@
 import { useRouter } from "expo-router";
+import { useState } from "react";
 import {
   ActivityIndicator,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   Pressable,
   Text,
   View,
 } from "react-native";
-import { MemoryTextSizeControl } from "./components/MemoryTextSizeControl";
-import { getMemoryTextSize } from "./memoryTextSizeOptions";
-import { MemoryHandwritingPicker } from "./components/MemoryHandwritingPicker";
+
 import { Screen } from "@/components/layout/Screen";
 import { useOnboardingPreferences } from "@/features/onboarding/OnboardingPreferencesProvider";
 import { colors } from "@/theme/colors";
 import { fontFamilies } from "@/theme/fonts";
+import { MemoryFlipCard } from "./components/MemoryFlipCard";
+import { MemoryControlsFade } from "./components/MemoryControlsFade";
+import { MemoryHandwritingPicker } from "./components/MemoryHandwritingPicker";
 import { MemoryInkPicker } from "./components/MemoryInkPicker";
-import { useMemoryDraft } from "./hooks/useMemoryDraft";
-import { getMemoryInkColor } from "./memoryInkOptions";
+import { MemoryPhotoCard } from "./components/MemoryPhotoCard";
+import { MemorySideToggle } from "./components/MemorySideToggle";
+import { MemoryTextSizeControl } from "./components/MemoryTextSizeControl";
 import { MemoryWritingCard } from "./components/MemoryWritingCard";
+import { useMemoryDraft } from "./hooks/useMemoryDraft";
 import { useSelectedPhoto } from "./hooks/useSelectedPhoto";
+import { getMemoryInkColor } from "./memoryInkOptions";
+import { getMemoryTextSize } from "./memoryTextSizeOptions";
 import { writeMemoryScreenStyles } from "./WriteMemoryScreen.styles";
 
 type WriteMemoryScreenProps = {
@@ -28,17 +35,29 @@ type WriteMemoryScreenProps = {
 export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
   const router = useRouter();
   const { selectedHandwriting } = useOnboardingPreferences();
+
   const {
+    chooseHandwriting,
     chooseInkColor,
     chooseTextSize,
     draft,
     updateMessage,
-    chooseHandwriting,
   } = useMemoryDraft(photoId, selectedHandwriting);
+
+  const { error, isLoading, uri } = useSelectedPhoto(photoId);
+
+  const [isShowingPhoto, setIsShowingPhoto] = useState(false);
 
   const inkColor = getMemoryInkColor(draft.inkColor);
   const textSize = getMemoryTextSize(draft.textSize);
-  const { error, isLoading } = useSelectedPhoto(photoId);
+
+  const isPhotoReady = !isLoading && !error && uri !== null;
+
+  function handleSideToggle() {
+    Keyboard.dismiss();
+
+    setIsShowingPhoto((currentlyShowingPhoto) => !currentlyShowingPhoto);
+  }
 
   return (
     <Screen>
@@ -55,7 +74,9 @@ export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
           <Text style={writeMemoryScreenStyles.backLabel}>Photos</Text>
         </Pressable>
 
-        <Text style={writeMemoryScreenStyles.title}>The blank back</Text>
+        <Text style={writeMemoryScreenStyles.title}>
+          {isShowingPhoto ? "Your photo" : "Your memory"}
+        </Text>
 
         {isLoading && <ActivityIndicator color={colors.action} />}
 
@@ -65,19 +86,35 @@ export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
           </Text>
         )}
 
-        {!isLoading && !error && (
-          <MemoryWritingCard
-            fontFamily={fontFamilies[draft.handwriting]}
-            fontSize={textSize.fontSize}
-            inkColor={inkColor}
-            lineHeight={textSize.lineHeight}
-            message={draft.message}
-            onMessageChange={updateMessage}
+        {isPhotoReady && (
+          <MemoryFlipCard
+            isShowingPhoto={isShowingPhoto}
+            photoSide={<MemoryPhotoCard uri={uri} />}
+            writingSide={
+              <MemoryWritingCard
+                fontFamily={fontFamilies[draft.handwriting]}
+                fontSize={textSize.fontSize}
+                inkColor={inkColor}
+                lineHeight={textSize.lineHeight}
+                message={draft.message}
+                onMessageChange={updateMessage}
+              />
+            }
           />
         )}
 
-        {!isLoading && !error && (
-          <View style={writeMemoryScreenStyles.controls}>
+        {isPhotoReady && (
+          <MemorySideToggle
+            isShowingPhoto={isShowingPhoto}
+            onPress={handleSideToggle}
+          />
+        )}
+
+        {isPhotoReady && (
+          <MemoryControlsFade
+            isVisible={!isShowingPhoto}
+            style={writeMemoryScreenStyles.controls}
+          >
             <MemoryHandwritingPicker
               onSelect={chooseHandwriting}
               selectedHandwriting={draft.handwriting}
@@ -94,8 +131,9 @@ export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
                 selectedTextSize={draft.textSize}
               />
             </View>
-          </View>
+          </MemoryControlsFade>
         )}
+
         <View style={writeMemoryScreenStyles.keyboardSpace} />
       </KeyboardAvoidingView>
     </Screen>
