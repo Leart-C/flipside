@@ -3,15 +3,11 @@ import { StyleSheet } from "react-native";
 import { colors } from "@/theme/colors";
 import { spacing } from "@/theme/spacing";
 
-export const pickYourHandScreenStyles = StyleSheet.create({
+export const photoLibraryScreenStyles = StyleSheet.create({
   content: {
     flex: 1,
-    paddingTop: spacing.regular,
+    paddingTop: spacing.large,
     paddingHorizontal: spacing.large,
-    paddingBottom: spacing.regular,
-  },
-  copy: {
-    marginTop: spacing.extraLarge,
   },
   title: {
     color: colors.text,
@@ -19,17 +15,10 @@ export const pickYourHandScreenStyles = StyleSheet.create({
     fontWeight: "600",
   },
   message: {
-    marginTop: spacing.medium,
+    marginTop: spacing.small,
     color: colors.mutedText,
     fontSize: 18,
+    fontStyle: "italic",
     lineHeight: 26,
-  },
-  optionsList: {
-    flex: 1,
-    marginTop: spacing.large,
-  },
-  optionsContent: {
-    gap: spacing.medium,
-    paddingBottom: spacing.large,
   },
 });
