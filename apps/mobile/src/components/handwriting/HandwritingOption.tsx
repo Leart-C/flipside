@@ -1,9 +1,7 @@
 import { Pressable, Text, View } from "react-native";
 
-import type {
-  HandwritingId,
-  HandwritingOption as HandwritingOptionData,
-} from "@/features/pick-your-hand/handwritingOptions";
+import type { HandwritingId } from "@/domain/handwriting";
+import type { HandwritingOption as HandwritingOptionData } from "@/features/pick-your-hand/handwritingOptions";
 
 import { handwritingOptionStyles } from "./HandwritingOption.styles";
 

@@ -1,6 +1,5 @@
+import type { HandwritingId } from "@/domain/handwriting";
 import { fontFamilies } from "@/theme/fonts";
-
-export type HandwritingId = keyof typeof fontFamilies;
 
 export type HandwritingOption = {
   id: HandwritingId;

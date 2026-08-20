@@ -3,7 +3,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-
+import { OnboardingPreferencesProvider } from "@/features/onboarding/OnboardingPreferencesProvider";
 import { fontAssets } from "@/theme/fonts";
 
 void SplashScreen.preventAutoHideAsync();
@@ -23,7 +23,9 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <Stack screenOptions={{ headerShown: false }} />
+      <OnboardingPreferencesProvider>
+        <Stack screenOptions={{ headerShown: false }} />
+      </OnboardingPreferencesProvider>
     </SafeAreaProvider>
   );
 }

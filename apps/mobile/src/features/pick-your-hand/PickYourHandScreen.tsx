@@ -1,19 +1,19 @@
-import { useState } from "react";
 import { Text, View } from "react-native";
 
 import { HandwritingOption } from "@/components/handwriting/HandwritingOption";
 import { Screen } from "@/components/layout/Screen";
 import { OnboardingProgress } from "@/components/onboarding/OnboardingProgress";
+import type { HandwritingId } from "@/domain/handwriting";
+import { useOnboardingPreferences } from "@/features/onboarding/OnboardingPreferencesProvider";
 
-import { type HandwritingId, handwritingOptions } from "./handwritingOptions";
+import { handwritingOptions } from "./handwritingOptions";
 import { pickYourHandScreenStyles } from "./PickYourHandScreen.styles";
 
 export function PickYourHandScreen() {
-  const [selectedHandwriting, setSelectedHandwriting] =
-    useState<HandwritingId>("note");
+  const { selectedHandwriting, chooseHandwriting } = useOnboardingPreferences();
 
   function handleHandwritingSelect(handwritingId: HandwritingId) {
-    setSelectedHandwriting(handwritingId);
+    chooseHandwriting(handwritingId);
   }
 
   return (
@@ -22,10 +22,10 @@ export function PickYourHandScreen() {
         <OnboardingProgress currentStep={3} />
 
         <View style={pickYourHandScreenStyles.copy}>
-          <Text style={pickYourHandScreenStyles.title}>Pick your hand</Text>
+          <Text style={pickYourHandScreenStyles.title}>Pick your hand.</Text>
           <Text style={pickYourHandScreenStyles.message}>
             Whatever you choose becomes your default. You can change it on any
-            photo, any time
+            photo, any time.
           </Text>
         </View>
 
