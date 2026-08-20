@@ -1,5 +1,4 @@
 import { useRouter } from "expo-router";
-import { useState } from "react";
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -13,7 +12,9 @@ import { Screen } from "@/components/layout/Screen";
 import { useOnboardingPreferences } from "@/features/onboarding/OnboardingPreferencesProvider";
 import { colors } from "@/theme/colors";
 import { fontFamilies } from "@/theme/fonts";
-
+import { MemoryInkPicker } from "./components/MemoryInkPicker";
+import { useMemoryDraft } from "./hooks/useMemoryDraft";
+import { getMemoryInkColor } from "./memoryInkOptions";
 import { MemoryWritingCard } from "./components/MemoryWritingCard";
 import { useSelectedPhoto } from "./hooks/useSelectedPhoto";
 import { writeMemoryScreenStyles } from "./WriteMemoryScreen.styles";
@@ -25,9 +26,13 @@ type WriteMemoryScreenProps = {
 export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
   const router = useRouter();
   const { selectedHandwriting } = useOnboardingPreferences();
-  const { error, isLoading } = useSelectedPhoto(photoId);
+  const { chooseInkColor, draft, updateMessage } = useMemoryDraft(
+    photoId,
+    selectedHandwriting,
+  );
 
-  const [message, setMessage] = useState("");
+  const inkColor = getMemoryInkColor(draft.inkColor);
+  const { error, isLoading } = useSelectedPhoto(photoId);
 
   return (
     <Screen>
@@ -56,10 +61,20 @@ export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
 
         {!isLoading && !error && (
           <MemoryWritingCard
-            fontFamily={fontFamilies[selectedHandwriting]}
-            message={message}
-            onMessageChange={setMessage}
+            fontFamily={fontFamilies[draft.handwriting]}
+            inkColor={inkColor}
+            message={draft.message}
+            onMessageChange={updateMessage}
           />
+        )}
+
+        {!isLoading && !error && (
+          <View style={writeMemoryScreenStyles.controls}>
+            <MemoryInkPicker
+              onSelect={chooseInkColor}
+              selectedInkColor={draft.inkColor}
+            />
+          </View>
         )}
 
         <View style={writeMemoryScreenStyles.keyboardSpace} />

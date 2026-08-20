@@ -8,12 +8,14 @@ type MemoryWritingCardProps = {
   fontFamily: string;
   message: string;
   onMessageChange: (message: string) => void;
+  inkColor: string;
 };
 
 export function MemoryWritingCard({
   fontFamily,
   message,
   onMessageChange,
+  inkColor,
 }: MemoryWritingCardProps) {
   return (
     <View style={memoryWritingCardStyles.card}>
@@ -23,10 +25,11 @@ export function MemoryWritingCard({
         onChangeText={onMessageChange}
         placeholder="Write what you want to remember…"
         placeholderTextColor={colors.mutedText}
-        selectionColor={colors.action}
+        selectionColor={inkColor}
         style={[
           memoryWritingCardStyles.input,
           {
+            color: inkColor,
             fontFamily,
           },
         ]}
