@@ -1,7 +1,11 @@
 import { useState } from "react";
 
 import type { HandwritingId } from "@/domain/handwriting";
-import type { InkColorId, MemoryDraft } from "@/domain/memory";
+import type {
+  InkColorId,
+  MemoryDraft,
+  MemoryTextSizeId,
+} from "@/domain/memory";
 
 const CURRENT_PRINT_LAYOUT_VERSION = 1;
 
@@ -60,8 +64,23 @@ export function useMemoryDraft(
     });
   }
 
+  function chooseTextSize(textSize: MemoryTextSizeId) {
+    setStoredDraft((currentDraft) => {
+      const activeDraft =
+        currentDraft.photoId === photoId
+          ? currentDraft
+          : createMemoryDraft(photoId, initialHandwriting);
+
+      return {
+        ...activeDraft,
+        textSize,
+      };
+    });
+  }
+
   return {
     chooseInkColor,
+    chooseTextSize,
     draft,
     updateMessage,
   };

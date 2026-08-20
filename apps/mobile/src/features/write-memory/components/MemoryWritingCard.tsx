@@ -6,16 +6,20 @@ import { memoryWritingCardStyles } from "./MemoryWritingCard.styles";
 
 type MemoryWritingCardProps = {
   fontFamily: string;
+  fontSize: number;
+  inkColor: string;
+  lineHeight: number;
   message: string;
   onMessageChange: (message: string) => void;
-  inkColor: string;
 };
 
 export function MemoryWritingCard({
   fontFamily,
+  fontSize,
+  inkColor,
+  lineHeight,
   message,
   onMessageChange,
-  inkColor,
 }: MemoryWritingCardProps) {
   return (
     <View style={memoryWritingCardStyles.card}>
@@ -31,6 +35,8 @@ export function MemoryWritingCard({
           {
             color: inkColor,
             fontFamily,
+            fontSize,
+            lineHeight,
           },
         ]}
         textAlignVertical="top"

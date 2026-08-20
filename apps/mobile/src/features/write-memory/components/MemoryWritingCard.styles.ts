@@ -24,7 +24,5 @@ export const memoryWritingCardStyles = StyleSheet.create({
     flex: 1,
     padding: 0,
     color: colors.blackInk,
-    fontSize: 29,
-    lineHeight: 40,
   },
 });

@@ -7,6 +7,8 @@ import {
   Text,
   View,
 } from "react-native";
+import { MemoryTextSizeControl } from "./components/MemoryTextSizeControl";
+import { getMemoryTextSize } from "./memoryTextSizeOptions";
 
 import { Screen } from "@/components/layout/Screen";
 import { useOnboardingPreferences } from "@/features/onboarding/OnboardingPreferencesProvider";
@@ -26,12 +28,11 @@ type WriteMemoryScreenProps = {
 export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
   const router = useRouter();
   const { selectedHandwriting } = useOnboardingPreferences();
-  const { chooseInkColor, draft, updateMessage } = useMemoryDraft(
-    photoId,
-    selectedHandwriting,
-  );
+  const { chooseInkColor, chooseTextSize, draft, updateMessage } =
+    useMemoryDraft(photoId, selectedHandwriting);
 
   const inkColor = getMemoryInkColor(draft.inkColor);
+  const textSize = getMemoryTextSize(draft.textSize);
   const { error, isLoading } = useSelectedPhoto(photoId);
 
   return (
@@ -62,7 +63,9 @@ export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
         {!isLoading && !error && (
           <MemoryWritingCard
             fontFamily={fontFamilies[draft.handwriting]}
+            fontSize={textSize.fontSize}
             inkColor={inkColor}
+            lineHeight={textSize.lineHeight}
             message={draft.message}
             onMessageChange={updateMessage}
           />
@@ -74,9 +77,13 @@ export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
               onSelect={chooseInkColor}
               selectedInkColor={draft.inkColor}
             />
+
+            <MemoryTextSizeControl
+              onSelect={chooseTextSize}
+              selectedTextSize={draft.textSize}
+            />
           </View>
         )}
-
         <View style={writeMemoryScreenStyles.keyboardSpace} />
       </KeyboardAvoidingView>
     </Screen>

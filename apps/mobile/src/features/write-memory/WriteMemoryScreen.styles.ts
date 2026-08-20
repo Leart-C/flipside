@@ -37,6 +37,9 @@ export const writeMemoryScreenStyles = StyleSheet.create({
     textAlign: "center",
   },
   controls: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginTop: spacing.regular,
   },
 });
