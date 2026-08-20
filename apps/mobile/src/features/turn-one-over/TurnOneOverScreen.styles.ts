@@ -28,7 +28,7 @@ export const turnOneOverScreenStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  memoryBack: {
+  memoryCard: {
     width: "72%",
     maxWidth: 320,
   },
