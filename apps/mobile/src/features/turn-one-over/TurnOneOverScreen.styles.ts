@@ -10,8 +10,7 @@ export const turnOneOverScreenStyles = StyleSheet.create({
     paddingHorizontal: spacing.large,
   },
   copy: {
-    flex: 1,
-    justifyContent: "center",
+    marginTop: spacing.extraLarge,
   },
   title: {
     color: colors.text,
@@ -23,5 +22,14 @@ export const turnOneOverScreenStyles = StyleSheet.create({
     color: colors.mutedText,
     fontSize: 18,
     lineHeight: 26,
+  },
+  memoryArea: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  memoryBack: {
+    width: "72%",
+    maxWidth: 320,
   },
 });
