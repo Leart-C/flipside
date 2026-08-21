@@ -1,40 +1,79 @@
+import { ClerkProvider, useAuth } from "@clerk/expo";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { SQLiteProvider } from "expo-sqlite";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient } from "@/query/queryClient";
+
 import { databaseConfig } from "@/database/databaseConfig";
 import { migrateDatabase } from "@/database/migrateDatabase";
+import { clerkConfig } from "@/features/auth/clerkConfig";
+import { clerkTokenCache } from "@/features/auth/clerkTokenCache";
+import { AuthenticationLoadingScreen } from "@/features/auth/components/AuthenticationLoadingScreen";
 import { OnboardingPreferencesProvider } from "@/features/onboarding/OnboardingPreferencesProvider";
+import { queryClient } from "@/query/queryClient";
 import { fontAssets } from "@/theme/fonts";
 
 void SplashScreen.preventAutoHideAsync();
 
+function AppNavigator() {
+  const { isLoaded, isSignedIn } = useAuth();
+
+  if (!isLoaded) {
+    return <AuthenticationLoadingScreen />;
+  }
+
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Protected guard={!isSignedIn}>
+        <Stack.Screen name="index" />
+        <Stack.Screen name="turn-one-over" />
+        <Stack.Screen name="pick-your-hand" />
+        <Stack.Screen name="sign-in" />
+      </Stack.Protected>
+
+      <Stack.Protected guard={Boolean(isSignedIn)}>
+        <Stack.Screen name="(authenticated)" />
+      </Stack.Protected>
+    </Stack>
+  );
+}
+
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts(fontAssets);
 
+  const fontsReady = fontsLoaded || fontError !== null;
+
   useEffect(() => {
-    if (fontsLoaded || fontError) {
+    if (fontsReady) {
       void SplashScreen.hideAsync();
     }
-  }, [fontsLoaded, fontError]);
+  }, [fontsReady]);
 
-  if (!fontsLoaded && !fontError) {
+  if (!fontsReady) {
     return null;
   }
 
   return (
-    <SQLiteProvider databaseName={databaseConfig.name} onInit={migrateDatabase}>
-      <QueryClientProvider client={queryClient}>
-        <SafeAreaProvider>
-          <OnboardingPreferencesProvider>
-            <Stack screenOptions={{ headerShown: false }} />
-          </OnboardingPreferencesProvider>
-        </SafeAreaProvider>
-      </QueryClientProvider>
-    </SQLiteProvider>
+    <ClerkProvider
+      __experimental_disableNativeClientSync
+      publishableKey={clerkConfig.publishableKey}
+      tokenCache={clerkTokenCache}
+    >
+      <SQLiteProvider
+        databaseName={databaseConfig.name}
+        onInit={migrateDatabase}
+      >
+        <QueryClientProvider client={queryClient}>
+          <SafeAreaProvider>
+            <OnboardingPreferencesProvider>
+              <AppNavigator />
+            </OnboardingPreferencesProvider>
+          </SafeAreaProvider>
+        </QueryClientProvider>
+      </SQLiteProvider>
+    </ClerkProvider>
   );
 }

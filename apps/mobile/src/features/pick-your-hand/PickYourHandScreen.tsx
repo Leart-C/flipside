@@ -21,7 +21,7 @@ export function PickYourHandScreen() {
 
   function handleStartWriting() {
     router.dismissAll();
-    router.replace("/photos");
+    router.replace("/sign-in");
   }
 
   return (
