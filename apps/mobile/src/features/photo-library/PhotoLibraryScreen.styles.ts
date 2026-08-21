@@ -10,6 +10,7 @@ export const photoLibraryScreenStyles = StyleSheet.create({
     paddingHorizontal: spacing.large,
   },
   title: {
+    flexShrink: 1,
     color: colors.text,
     fontSize: 36,
     fontWeight: "600",
@@ -35,5 +36,28 @@ export const photoLibraryScreenStyles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     textAlign: "center",
+  },
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: spacing.regular,
+  },
+  shoeboxButton: {
+    minHeight: 44,
+    justifyContent: "center",
+    paddingHorizontal: spacing.regular,
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: 22,
+    borderWidth: 1,
+  },
+  shoeboxLabel: {
+    color: colors.action,
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  pressedButton: {
+    opacity: 0.7,
   },
 });

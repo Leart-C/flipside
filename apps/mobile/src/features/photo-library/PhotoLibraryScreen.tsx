@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { ActivityIndicator, Linking, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Linking,
+  Pressable,
+  Text,
+  View,
+} from "react-native";
 import { useRouter } from "expo-router";
 import { Screen } from "@/components/layout/Screen";
 import { colors } from "@/theme/colors";
@@ -79,7 +85,22 @@ export function PhotoLibraryScreen() {
   return (
     <Screen>
       <View style={photoLibraryScreenStyles.content}>
-        <Text style={photoLibraryScreenStyles.title}>Choose a photo</Text>
+        <View style={photoLibraryScreenStyles.titleRow}>
+          <Text style={photoLibraryScreenStyles.title}>Choose a photo</Text>
+
+          <Pressable
+            accessibilityHint="Opens your saved memories"
+            accessibilityLabel="Open Shoebox"
+            accessibilityRole="button"
+            onPress={() => router.push("/shoebox")}
+            style={({ pressed }) => [
+              photoLibraryScreenStyles.shoeboxButton,
+              pressed && photoLibraryScreenStyles.pressedButton,
+            ]}
+          >
+            <Text style={photoLibraryScreenStyles.shoeboxLabel}>Shoebox</Text>
+          </Pressable>
+        </View>
 
         <Text style={photoLibraryScreenStyles.message}>
           From your library — pick one to write on.

@@ -1,5 +1,5 @@
 import type { InkColorId } from "@/domain/memory";
-import { colors } from "@/theme/colors";
+import { getMemoryInkColor } from "@/theme/memoryInkColors";
 
 export type MemoryInkOption = {
   color: string;
@@ -9,31 +9,23 @@ export type MemoryInkOption = {
 
 export const memoryInkOptions: MemoryInkOption[] = [
   {
-    color: colors.blackInk,
+    color: getMemoryInkColor("black"),
     id: "black",
     label: "Black ink",
   },
   {
-    color: colors.blueInk,
+    color: getMemoryInkColor("blue"),
     id: "blue",
     label: "Blue ink",
   },
   {
-    color: colors.redInk,
+    color: getMemoryInkColor("red"),
     id: "red",
     label: "Red ink",
   },
   {
-    color: colors.greenInk,
+    color: getMemoryInkColor("green"),
     id: "green",
     label: "Green ink",
   },
 ];
-
-export function getMemoryInkColor(inkColorId: InkColorId) {
-  const option = memoryInkOptions.find(
-    (inkOption) => inkOption.id === inkColorId,
-  );
-
-  return option?.color ?? colors.blackInk;
-}

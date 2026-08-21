@@ -24,13 +24,15 @@ import { MemoryTextSizeControl } from "./components/MemoryTextSizeControl";
 import { MemoryWritingCard } from "./components/MemoryWritingCard";
 import { useMemoryDraft } from "./hooks/useMemoryDraft";
 import { useSelectedPhoto } from "./hooks/useSelectedPhoto";
-import { getMemoryInkColor } from "./memoryInkOptions";
+import { getMemoryInkColor } from "@/theme/memoryInkColors";
 import { getMemoryTextSize } from "./memoryTextSizeOptions";
 import { writeMemoryScreenStyles } from "./WriteMemoryScreen.styles";
 import { useMemoryRepository } from "@/features/memories/hooks/useMemoryRepository";
 import { MemoryActionBar } from "./components/MemoryActionBar";
 import type { SavedMemory } from "@/domain/memory";
 import { PrintOrderSheet } from "@/features/print-order/components/PrintOrderSheet";
+import { useQueryClient } from "@tanstack/react-query";
+import { memoryQueryKeys } from "@/features/memories/memoryQueryKeys";
 
 type WriteMemoryScreenProps = {
   photoId: string;
@@ -40,6 +42,7 @@ export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
   const router = useRouter();
   const { selectedHandwriting } = useOnboardingPreferences();
   const memoryRepository = useMemoryRepository();
+  const queryClient = useQueryClient();
 
   const {
     chooseHandwriting,
@@ -81,7 +84,13 @@ export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
     setIsSaving(true);
 
     try {
-      return await memoryRepository.save(draft);
+      const savedMemory = await memoryRepository.save(draft);
+
+      await queryClient.invalidateQueries({
+        queryKey: memoryQueryKeys.all,
+      });
+
+      return savedMemory;
     } catch {
       setSaveFailed(true);
       return null;
@@ -94,7 +103,7 @@ export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
     const savedMemory = await saveCurrentDraft();
 
     if (savedMemory) {
-      router.back();
+      router.replace("/shoebox");
     }
   }
 

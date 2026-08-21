@@ -8,19 +8,56 @@ import type {
 
 type MemoryRow = {
   created_at: number;
+  handwriting: SavedMemory["handwriting"];
   id: string;
+  ink_color: SavedMemory["inkColor"];
   message: string;
+  print_layout_version: number;
+  source_photo_asset_id: string;
   sync_status: MemorySyncStatus;
+  text_size: SavedMemory["textSize"];
   updated_at: number;
 };
 
 export type MemoryRepository = {
+  findAll: () => Promise<SavedMemory[]>;
   save: (draft: MemoryDraft) => Promise<SavedMemory>;
 };
 
 export function createMemoryRepository(
   database: SQLiteDatabase,
 ): MemoryRepository {
+  async function findAll(): Promise<SavedMemory[]> {
+    const rows = await database.getAllAsync<MemoryRow>(`
+      SELECT
+        id,
+        source_photo_asset_id,
+        message,
+        handwriting,
+        ink_color,
+        text_size,
+        print_layout_version,
+        sync_status,
+        created_at,
+        updated_at
+      FROM memories
+      ORDER BY updated_at DESC
+    `);
+
+    return rows.map((row) => ({
+      id: row.id,
+      photoId: row.source_photo_asset_id,
+      message: row.message,
+      handwriting: row.handwriting,
+      inkColor: row.ink_color,
+      textSize: row.text_size,
+      printLayoutVersion: row.print_layout_version,
+      syncStatus: row.sync_status,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at,
+    }));
+  }
+
   async function save(draft: MemoryDraft): Promise<SavedMemory> {
     const message = draft.message.trim();
 
@@ -111,6 +148,7 @@ export function createMemoryRepository(
   }
 
   return {
+    findAll,
     save,
   };
 }
