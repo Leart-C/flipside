@@ -1,4 +1,4 @@
 export const databaseConfig = {
   name: "flipside.db",
-  version: 2,
+  version: 3,
 } as const;

@@ -6,7 +6,7 @@ import { SQLiteProvider } from "expo-sqlite";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-
+import { useOnboardingStatus } from "@/features/onboarding/hooks/useOnboardingStatus";
 import { databaseConfig } from "@/database/databaseConfig";
 import { migrateDatabase } from "@/database/migrateDatabase";
 import { clerkConfig } from "@/features/auth/clerkConfig";
@@ -19,18 +19,28 @@ import { fontAssets } from "@/theme/fonts";
 void SplashScreen.preventAutoHideAsync();
 
 function AppNavigator() {
-  const { isLoaded, isSignedIn } = useAuth();
+  const { isLoaded: authenticationLoaded, isSignedIn } = useAuth();
 
-  if (!isLoaded) {
+  const {
+    data: hasCompletedOnboarding = false,
+    isPending: onboardingStatusLoading,
+  } = useOnboardingStatus();
+
+  const signedOut = authenticationLoaded && !isSignedIn;
+
+  if (!authenticationLoaded || (signedOut && onboardingStatusLoading)) {
     return <AuthenticationLoadingScreen />;
   }
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Protected guard={!isSignedIn}>
+      <Stack.Protected guard={signedOut && !hasCompletedOnboarding}>
         <Stack.Screen name="index" />
         <Stack.Screen name="turn-one-over" />
         <Stack.Screen name="pick-your-hand" />
+      </Stack.Protected>
+
+      <Stack.Protected guard={signedOut && hasCompletedOnboarding}>
         <Stack.Screen name="sign-in" />
       </Stack.Protected>
 

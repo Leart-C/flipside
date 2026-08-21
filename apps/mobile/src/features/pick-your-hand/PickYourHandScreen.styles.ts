@@ -32,4 +32,11 @@ export const pickYourHandScreenStyles = StyleSheet.create({
     gap: spacing.medium,
     paddingBottom: spacing.large,
   },
+  errorMessage: {
+    marginBottom: spacing.medium,
+    color: colors.redInk,
+    fontSize: 14,
+    lineHeight: 20,
+    textAlign: "center",
+  },
 });

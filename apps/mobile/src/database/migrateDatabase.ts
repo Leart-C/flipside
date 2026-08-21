@@ -160,5 +160,15 @@ export async function migrateDatabase(database: SQLiteDatabase) {
           PRAGMA user_version = 2;
         `);
     }
+    if (currentVersion < 3) {
+      await transaction.execAsync(`
+        CREATE TABLE IF NOT EXISTS app_settings (
+          setting_key TEXT PRIMARY KEY NOT NULL,
+          setting_value TEXT NOT NULL
+        );
+
+        PRAGMA user_version = 3;
+      `);
+    }
   });
 }
