@@ -8,7 +8,7 @@ export function useSavedMemory(memoryId: string) {
 
   return useQuery({
     enabled: memoryId.length > 0,
-    queryKey: memoryQueryKeys.detail(memoryId),
+    queryKey: memoryQueryKeys.detail(memoryRepository.ownerId, memoryId),
     queryFn: () => memoryRepository.findById(memoryId),
   });
 }

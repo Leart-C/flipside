@@ -7,7 +7,7 @@ export function useShoeboxMemories() {
   const memoryRepository = useMemoryRepository();
 
   return useQuery({
-    queryKey: memoryQueryKeys.shoebox,
+    queryKey: memoryQueryKeys.shoebox(memoryRepository.ownerId),
     queryFn: memoryRepository.findAll,
   });
 }

@@ -1,5 +1,11 @@
 export const memoryQueryKeys = {
-  all: ["memories"] as const,
-  shoebox: ["memories", "shoebox"] as const,
-  detail: (memoryId: string) => ["memories", "detail", memoryId] as const,
+  all: (ownerId: string) => ["memories", ownerId] as const,
+
+  shoebox: (ownerId: string) =>
+    [...memoryQueryKeys.all(ownerId), "shoebox"] as const,
+
+  detail: (ownerId: string, memoryId: string) =>
+    [...memoryQueryKeys.all(ownerId), "detail", memoryId] as const,
+
+  ownership: (ownerId: string) => ["memory-ownership", ownerId] as const,
 };

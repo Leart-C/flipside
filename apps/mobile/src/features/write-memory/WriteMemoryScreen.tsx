@@ -95,7 +95,7 @@ export function WriteMemoryScreen({
       const savedMemory = await memoryRepository.save(draft);
 
       await queryClient.invalidateQueries({
-        queryKey: memoryQueryKeys.all,
+        queryKey: memoryQueryKeys.all(memoryRepository.ownerId),
       });
 
       return savedMemory;

@@ -1,5 +1,12 @@
 import { Stack } from "expo-router";
 
+import { AuthenticatedAppInitializer } from "@/features/app-initialization/AuthenticatedAppInitializer";
+
 export default function AuthenticatedLayout() {
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <>
+      <AuthenticatedAppInitializer />
+      <Stack screenOptions={{ headerShown: false }} />
+    </>
+  );
 }
