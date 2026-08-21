@@ -29,6 +29,8 @@ import { getMemoryTextSize } from "./memoryTextSizeOptions";
 import { writeMemoryScreenStyles } from "./WriteMemoryScreen.styles";
 import { useMemoryRepository } from "@/features/memories/hooks/useMemoryRepository";
 import { MemoryActionBar } from "./components/MemoryActionBar";
+import type { SavedMemory } from "@/domain/memory";
+import { PrintOrderSheet } from "@/features/print-order/components/PrintOrderSheet";
 
 type WriteMemoryScreenProps = {
   photoId: string;
@@ -52,6 +54,9 @@ export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
   const [isShowingPhoto, setIsShowingPhoto] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveFailed, setSaveFailed] = useState(false);
+  const [memoryForPrint, setMemoryForPrint] = useState<SavedMemory | null>(
+    null,
+  );
 
   const inkColor = getMemoryInkColor(draft.inkColor);
   const textSize = getMemoryTextSize(draft.textSize);
@@ -66,9 +71,9 @@ export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
     setIsShowingPhoto((currentlyShowingPhoto) => !currentlyShowingPhoto);
   }
 
-  async function handleSaveToShoebox() {
+  async function saveCurrentDraft() {
     if (!canSave) {
-      return;
+      return null;
     }
 
     Keyboard.dismiss();
@@ -76,12 +81,28 @@ export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
     setIsSaving(true);
 
     try {
-      await memoryRepository.save(draft);
-      router.back();
+      return await memoryRepository.save(draft);
     } catch {
       setSaveFailed(true);
+      return null;
     } finally {
       setIsSaving(false);
+    }
+  }
+
+  async function handleSaveToShoebox() {
+    const savedMemory = await saveCurrentDraft();
+
+    if (savedMemory) {
+      router.back();
+    }
+  }
+
+  async function handlePrint() {
+    const savedMemory = await saveCurrentDraft();
+
+    if (savedMemory) {
+      setMemoryForPrint(savedMemory);
     }
   }
 
@@ -167,6 +188,9 @@ export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
             <MemoryActionBar
               disabled={!canSave}
               isSaving={isSaving}
+              onPrint={() => {
+                void handlePrint();
+              }}
               onSaveToShoebox={() => {
                 void handleSaveToShoebox();
               }}
@@ -176,6 +200,14 @@ export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
 
         <View style={writeMemoryScreenStyles.keyboardSpace} />
       </KeyboardAvoidingView>
+
+      <PrintOrderSheet
+        fontFamily={fontFamilies[draft.handwriting]}
+        inkColor={inkColor}
+        memory={memoryForPrint}
+        onClose={() => setMemoryForPrint(null)}
+        visible={memoryForPrint !== null}
+      />
     </Screen>
   );
 }
