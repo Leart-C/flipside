@@ -1,64 +1,64 @@
 import { Asset } from "expo-media-library";
 import { useEffect, useState } from "react";
 
-type SelectedPhotoState = {
+type PhotoAssetState = {
+  assetId: string;
   error: boolean;
   isLoading: boolean;
-  photoId: string;
   uri: string | null;
 };
 
-function createLoadingState(photoId: string): SelectedPhotoState {
+function createLoadingState(assetId: string): PhotoAssetState {
   return {
+    assetId,
     error: false,
     isLoading: true,
-    photoId,
     uri: null,
   };
 }
 
-export function useSelectedPhoto(photoId: string) {
-  const [state, setState] = useState<SelectedPhotoState>(() =>
-    createLoadingState(photoId),
+export function usePhotoAssetUri(assetId: string) {
+  const [state, setState] = useState<PhotoAssetState>(() =>
+    createLoadingState(assetId),
   );
 
   useEffect(() => {
     let isActive = true;
 
-    async function loadPhoto() {
+    async function loadPhotoAsset() {
       try {
-        const photo = new Asset(photoId);
-        const uri = await photo.getUri();
+        const photoAsset = new Asset(assetId);
+        const uri = await photoAsset.getUri();
 
         if (isActive) {
           setState({
+            assetId,
             error: false,
             isLoading: false,
-            photoId,
             uri,
           });
         }
       } catch {
         if (isActive) {
           setState({
+            assetId,
             error: true,
             isLoading: false,
-            photoId,
             uri: null,
           });
         }
       }
     }
 
-    void loadPhoto();
+    void loadPhotoAsset();
 
     return () => {
       isActive = false;
     };
-  }, [photoId]);
+  }, [assetId]);
 
-  if (state.photoId !== photoId) {
-    return createLoadingState(photoId);
+  if (state.assetId !== assetId) {
+    return createLoadingState(assetId);
   }
 
   return state;

@@ -23,7 +23,7 @@ import { MemorySideToggle } from "./components/MemorySideToggle";
 import { MemoryTextSizeControl } from "./components/MemoryTextSizeControl";
 import { MemoryWritingCard } from "./components/MemoryWritingCard";
 import { createNewMemoryDraft, useMemoryDraft } from "./hooks/useMemoryDraft";
-import { useSelectedPhoto } from "./hooks/useSelectedPhoto";
+import { usePhotoAssetUri } from "@/features/photo-library/hooks/usePhotoAssetUri";
 import { getMemoryInkColor } from "@/theme/memoryInkColors";
 import { getMemoryTextSize } from "./memoryTextSizeOptions";
 import { writeMemoryScreenStyles } from "./WriteMemoryScreen.styles";
@@ -60,7 +60,7 @@ export function WriteMemoryScreen({
     initialMemory ?? createNewMemoryDraft(photoId, selectedHandwriting),
   );
 
-  const { error, isLoading, uri } = useSelectedPhoto(photoId);
+  const { error, isLoading, uri } = usePhotoAssetUri(photoId);
 
   const [isShowingPhoto, setIsShowingPhoto] = useState(false);
   const [isSaving, setIsSaving] = useState(false);

@@ -21,10 +21,10 @@ export const shoeboxMemoryCardStyles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 3,
   },
-  pressedCard: {
-    opacity: 0.75,
-    transform: [{ scale: 0.98 }],
-  },
+  // pressedCard: {
+  //   opacity: 0.75,
+  //   transform: [{ scale: 0.98 }],
+  // },
   message: {
     marginTop: spacing.large,
   },

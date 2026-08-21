@@ -71,7 +71,6 @@ export function ShoeboxScreen() {
 
           <View style={shoeboxScreenStyles.controls}>
             <ShoeboxViewToggle
-              frontsDisabled
               onSelect={setSelectedView}
               selectedView={selectedView}
             />
@@ -143,6 +142,7 @@ export function ShoeboxScreen() {
               memories={memories}
               onRefresh={handleRefresh}
               onMemoryPress={handleMemoryPress}
+              selectedView={selectedView}
             />
           </View>
         )}
