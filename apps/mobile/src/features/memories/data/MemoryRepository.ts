@@ -19,8 +19,24 @@ type MemoryRow = {
   updated_at: number;
 };
 
+function mapMemoryRow(row: MemoryRow): SavedMemory {
+  return {
+    id: row.id,
+    photoId: row.source_photo_asset_id,
+    message: row.message,
+    handwriting: row.handwriting,
+    inkColor: row.ink_color,
+    textSize: row.text_size,
+    printLayoutVersion: row.print_layout_version,
+    syncStatus: row.sync_status,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
 export type MemoryRepository = {
   findAll: () => Promise<SavedMemory[]>;
+  findById: (memoryId: string) => Promise<SavedMemory | null>;
   save: (draft: MemoryDraft) => Promise<SavedMemory>;
 };
 
@@ -44,18 +60,31 @@ export function createMemoryRepository(
       ORDER BY updated_at DESC
     `);
 
-    return rows.map((row) => ({
-      id: row.id,
-      photoId: row.source_photo_asset_id,
-      message: row.message,
-      handwriting: row.handwriting,
-      inkColor: row.ink_color,
-      textSize: row.text_size,
-      printLayoutVersion: row.print_layout_version,
-      syncStatus: row.sync_status,
-      createdAt: row.created_at,
-      updatedAt: row.updated_at,
-    }));
+    return rows.map(mapMemoryRow);
+  }
+
+  async function findById(memoryId: string): Promise<SavedMemory | null> {
+    const row = await database.getFirstAsync<MemoryRow>(
+      `
+        SELECT
+          id,
+          source_photo_asset_id,
+          message,
+          handwriting,
+          ink_color,
+          text_size,
+          print_layout_version,
+          sync_status,
+          created_at,
+          updated_at
+        FROM memories
+        WHERE id = ?
+        LIMIT 1
+      `,
+      memoryId,
+    );
+
+    return row ? mapMemoryRow(row) : null;
   }
 
   async function save(draft: MemoryDraft): Promise<SavedMemory> {
@@ -149,6 +178,7 @@ export function createMemoryRepository(
 
   return {
     findAll,
+    findById,
     save,
   };
 }

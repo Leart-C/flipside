@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { Pressable, Text } from "react-native";
 
 import type { MemoryTextSizeId, SavedMemory } from "@/domain/memory";
 import { fontFamilies } from "@/theme/fonts";
@@ -8,6 +8,7 @@ import { shoeboxMemoryCardStyles } from "./ShoeboxMemoryCard.styles";
 
 type ShoeboxMemoryCardProps = {
   memory: SavedMemory;
+  onPress: (memory: SavedMemory) => void;
 };
 
 const previewTextSizes: Record<
@@ -31,13 +32,19 @@ const previewTextSizes: Record<
   },
 };
 
-export function ShoeboxMemoryCard({ memory }: ShoeboxMemoryCardProps) {
+export function ShoeboxMemoryCard({ memory, onPress }: ShoeboxMemoryCardProps) {
   const textSize = previewTextSizes[memory.textSize];
 
   return (
-    <View
+    <Pressable
+      accessibilityHint="Opens this saved memory"
       accessibilityLabel={`Memory: ${memory.message}`}
-      style={shoeboxMemoryCardStyles.card}
+      accessibilityRole="button"
+      onPress={() => onPress(memory)}
+      style={({ pressed }) => [
+        shoeboxMemoryCardStyles.card,
+        pressed && shoeboxMemoryCardStyles.pressedCard,
+      ]}
     >
       <Text
         numberOfLines={8}
@@ -53,6 +60,6 @@ export function ShoeboxMemoryCard({ memory }: ShoeboxMemoryCardProps) {
       >
         {memory.message}
       </Text>
-    </View>
+    </Pressable>
   );
 }

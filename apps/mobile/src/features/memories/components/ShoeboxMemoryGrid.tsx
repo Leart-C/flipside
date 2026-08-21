@@ -10,12 +10,14 @@ type ShoeboxMemoryGridProps = {
   isRefreshing: boolean;
   memories: SavedMemory[];
   onRefresh: () => void;
+  onMemoryPress: (memory: SavedMemory) => void;
 };
 
 export function ShoeboxMemoryGrid({
   isRefreshing,
   memories,
   onRefresh,
+  onMemoryPress,
 }: ShoeboxMemoryGridProps) {
   const { width: screenWidth } = useWindowDimensions();
 
@@ -41,7 +43,7 @@ export function ShoeboxMemoryGrid({
             },
           ]}
         >
-          <ShoeboxMemoryCard memory={item} />
+          <ShoeboxMemoryCard memory={item} onPress={onMemoryPress} />
         </View>
       )}
       showsVerticalScrollIndicator={false}

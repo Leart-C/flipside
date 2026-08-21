@@ -12,7 +12,6 @@ export const shoeboxMemoryCardStyles = StyleSheet.create({
     backgroundColor: colors.paper,
     borderColor: colors.border,
     borderWidth: 1,
-
     shadowColor: colors.text,
     shadowOffset: {
       width: 0,
@@ -20,8 +19,11 @@ export const shoeboxMemoryCardStyles = StyleSheet.create({
     },
     shadowOpacity: 0.12,
     shadowRadius: 5,
-
     elevation: 3,
+  },
+  pressedCard: {
+    opacity: 0.75,
+    transform: [{ scale: 0.98 }],
   },
   message: {
     marginTop: spacing.large,

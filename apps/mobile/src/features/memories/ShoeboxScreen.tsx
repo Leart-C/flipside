@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 
 import { Screen } from "@/components/layout/Screen";
 import { colors } from "@/theme/colors";
-
+import type { SavedMemory } from "@/domain/memory";
 import { ShoeboxMemoryGrid } from "./components/ShoeboxMemoryGrid";
 import { ShoeboxViewToggle } from "./components/ShoeboxViewToggle";
 import { useShoeboxMemories } from "./hooks/useShoeboxMemories";
@@ -31,6 +31,15 @@ export function ShoeboxScreen() {
 
   function handleAdd() {
     router.replace("/photos");
+  }
+
+  function handleMemoryPress(memory: SavedMemory) {
+    router.push({
+      pathname: "/memory/[memoryId]",
+      params: {
+        memoryId: memory.id,
+      },
+    });
   }
 
   function handleRefresh() {
@@ -133,6 +142,7 @@ export function ShoeboxScreen() {
               isRefreshing={isRefetching}
               memories={memories}
               onRefresh={handleRefresh}
+              onMemoryPress={handleMemoryPress}
             />
           </View>
         )}

@@ -22,7 +22,7 @@ import { MemoryPhotoCard } from "./components/MemoryPhotoCard";
 import { MemorySideToggle } from "./components/MemorySideToggle";
 import { MemoryTextSizeControl } from "./components/MemoryTextSizeControl";
 import { MemoryWritingCard } from "./components/MemoryWritingCard";
-import { useMemoryDraft } from "./hooks/useMemoryDraft";
+import { createNewMemoryDraft, useMemoryDraft } from "./hooks/useMemoryDraft";
 import { useSelectedPhoto } from "./hooks/useSelectedPhoto";
 import { getMemoryInkColor } from "@/theme/memoryInkColors";
 import { getMemoryTextSize } from "./memoryTextSizeOptions";
@@ -35,10 +35,16 @@ import { useQueryClient } from "@tanstack/react-query";
 import { memoryQueryKeys } from "@/features/memories/memoryQueryKeys";
 
 type WriteMemoryScreenProps = {
+  backLabel?: string;
+  initialMemory?: SavedMemory;
   photoId: string;
 };
 
-export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
+export function WriteMemoryScreen({
+  backLabel = "Photos",
+  initialMemory,
+  photoId,
+}: WriteMemoryScreenProps) {
   const router = useRouter();
   const { selectedHandwriting } = useOnboardingPreferences();
   const memoryRepository = useMemoryRepository();
@@ -50,7 +56,9 @@ export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
     chooseTextSize,
     draft,
     updateMessage,
-  } = useMemoryDraft(photoId, selectedHandwriting);
+  } = useMemoryDraft(
+    initialMemory ?? createNewMemoryDraft(photoId, selectedHandwriting),
+  );
 
   const { error, isLoading, uri } = useSelectedPhoto(photoId);
 
@@ -102,9 +110,16 @@ export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
   async function handleSaveToShoebox() {
     const savedMemory = await saveCurrentDraft();
 
-    if (savedMemory) {
-      router.replace("/shoebox");
+    if (!savedMemory) {
+      return;
     }
+
+    if (initialMemory) {
+      router.back();
+      return;
+    }
+
+    router.replace("/shoebox");
   }
 
   async function handlePrint() {
@@ -122,12 +137,12 @@ export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
         style={writeMemoryScreenStyles.content}
       >
         <Pressable
-          accessibilityLabel="Return to photo library"
+          accessibilityLabel={`Return to ${backLabel}`}
           accessibilityRole="button"
           onPress={() => router.back()}
           style={writeMemoryScreenStyles.backButton}
         >
-          <Text style={writeMemoryScreenStyles.backLabel}>Photos</Text>
+          <Text style={writeMemoryScreenStyles.backLabel}>{backLabel}</Text>
         </Pressable>
 
         <Text style={writeMemoryScreenStyles.title}>

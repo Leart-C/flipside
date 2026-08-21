@@ -9,7 +9,7 @@ import type {
 
 const CURRENT_PRINT_LAYOUT_VERSION = 1;
 
-function createMemoryDraft(
+export function createNewMemoryDraft(
   photoId: string,
   handwriting: HandwritingId,
 ): MemoryDraft {
@@ -23,79 +23,65 @@ function createMemoryDraft(
   };
 }
 
-export function useMemoryDraft(
-  photoId: string,
-  initialHandwriting: HandwritingId,
-) {
+function copyMemoryDraft(draft: MemoryDraft): MemoryDraft {
+  return {
+    photoId: draft.photoId,
+    message: draft.message,
+    handwriting: draft.handwriting,
+    inkColor: draft.inkColor,
+    textSize: draft.textSize,
+    printLayoutVersion: draft.printLayoutVersion,
+  };
+}
+
+export function useMemoryDraft(initialDraft: MemoryDraft) {
   const [storedDraft, setStoredDraft] = useState<MemoryDraft>(() =>
-    createMemoryDraft(photoId, initialHandwriting),
+    copyMemoryDraft(initialDraft),
   );
 
   const draft =
-    storedDraft.photoId === photoId
+    storedDraft.photoId === initialDraft.photoId
       ? storedDraft
-      : createMemoryDraft(photoId, initialHandwriting);
+      : copyMemoryDraft(initialDraft);
+
+  function getActiveDraft(currentDraft: MemoryDraft) {
+    return currentDraft.photoId === initialDraft.photoId
+      ? currentDraft
+      : copyMemoryDraft(initialDraft);
+  }
 
   function updateMessage(message: string) {
-    setStoredDraft((currentDraft) => {
-      const activeDraft =
-        currentDraft.photoId === photoId
-          ? currentDraft
-          : createMemoryDraft(photoId, initialHandwriting);
-
-      return {
-        ...activeDraft,
-        message,
-      };
-    });
+    setStoredDraft((currentDraft) => ({
+      ...getActiveDraft(currentDraft),
+      message,
+    }));
   }
 
   function chooseInkColor(inkColor: InkColorId) {
-    setStoredDraft((currentDraft) => {
-      const activeDraft =
-        currentDraft.photoId === photoId
-          ? currentDraft
-          : createMemoryDraft(photoId, initialHandwriting);
-
-      return {
-        ...activeDraft,
-        inkColor,
-      };
-    });
+    setStoredDraft((currentDraft) => ({
+      ...getActiveDraft(currentDraft),
+      inkColor,
+    }));
   }
 
   function chooseTextSize(textSize: MemoryTextSizeId) {
-    setStoredDraft((currentDraft) => {
-      const activeDraft =
-        currentDraft.photoId === photoId
-          ? currentDraft
-          : createMemoryDraft(photoId, initialHandwriting);
-
-      return {
-        ...activeDraft,
-        textSize,
-      };
-    });
+    setStoredDraft((currentDraft) => ({
+      ...getActiveDraft(currentDraft),
+      textSize,
+    }));
   }
 
   function chooseHandwriting(handwriting: HandwritingId) {
-    setStoredDraft((currentDraft) => {
-      const activeDraft =
-        currentDraft.photoId === photoId
-          ? currentDraft
-          : createMemoryDraft(photoId, initialHandwriting);
-
-      return {
-        ...activeDraft,
-        handwriting,
-      };
-    });
+    setStoredDraft((currentDraft) => ({
+      ...getActiveDraft(currentDraft),
+      handwriting,
+    }));
   }
 
   return {
+    chooseHandwriting,
     chooseInkColor,
     chooseTextSize,
-    chooseHandwriting,
     draft,
     updateMessage,
   };
