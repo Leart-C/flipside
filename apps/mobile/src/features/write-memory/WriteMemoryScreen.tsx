@@ -27,6 +27,8 @@ import { useSelectedPhoto } from "./hooks/useSelectedPhoto";
 import { getMemoryInkColor } from "./memoryInkOptions";
 import { getMemoryTextSize } from "./memoryTextSizeOptions";
 import { writeMemoryScreenStyles } from "./WriteMemoryScreen.styles";
+import { useMemoryRepository } from "@/features/memories/hooks/useMemoryRepository";
+import { MemoryActionBar } from "./components/MemoryActionBar";
 
 type WriteMemoryScreenProps = {
   photoId: string;
@@ -35,6 +37,7 @@ type WriteMemoryScreenProps = {
 export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
   const router = useRouter();
   const { selectedHandwriting } = useOnboardingPreferences();
+  const memoryRepository = useMemoryRepository();
 
   const {
     chooseHandwriting,
@@ -47,16 +50,39 @@ export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
   const { error, isLoading, uri } = useSelectedPhoto(photoId);
 
   const [isShowingPhoto, setIsShowingPhoto] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveFailed, setSaveFailed] = useState(false);
 
   const inkColor = getMemoryInkColor(draft.inkColor);
   const textSize = getMemoryTextSize(draft.textSize);
 
   const isPhotoReady = !isLoading && !error && uri !== null;
 
+  const canSave = draft.message.trim().length > 0 && !isSaving;
+
   function handleSideToggle() {
     Keyboard.dismiss();
 
     setIsShowingPhoto((currentlyShowingPhoto) => !currentlyShowingPhoto);
+  }
+
+  async function handleSaveToShoebox() {
+    if (!canSave) {
+      return;
+    }
+
+    Keyboard.dismiss();
+    setSaveFailed(false);
+    setIsSaving(true);
+
+    try {
+      await memoryRepository.save(draft);
+      router.back();
+    } catch {
+      setSaveFailed(true);
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   return (
@@ -131,6 +157,20 @@ export function WriteMemoryScreen({ photoId }: WriteMemoryScreenProps) {
                 selectedTextSize={draft.textSize}
               />
             </View>
+
+            {saveFailed && (
+              <Text style={writeMemoryScreenStyles.saveError}>
+                Your memory couldn&apos;t be saved. Please try again.
+              </Text>
+            )}
+
+            <MemoryActionBar
+              disabled={!canSave}
+              isSaving={isSaving}
+              onSaveToShoebox={() => {
+                void handleSaveToShoebox();
+              }}
+            />
           </MemoryControlsFade>
         )}
 

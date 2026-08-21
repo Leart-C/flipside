@@ -45,4 +45,11 @@ export const writeMemoryScreenStyles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: spacing.regular,
   },
+  saveError: {
+    marginTop: spacing.small,
+    color: colors.redInk,
+    fontSize: 14,
+    lineHeight: 20,
+    textAlign: "center",
+  },
 });
