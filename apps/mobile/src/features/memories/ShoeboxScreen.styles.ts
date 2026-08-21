@@ -96,4 +96,9 @@ export const shoeboxScreenStyles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
   },
+  headerActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.small,
+  },
 });

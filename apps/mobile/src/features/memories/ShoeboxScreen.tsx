@@ -10,6 +10,7 @@ import { ShoeboxViewToggle } from "./components/ShoeboxViewToggle";
 import { useShoeboxMemories } from "./hooks/useShoeboxMemories";
 import type { ShoeboxView } from "./shoeboxView";
 import { shoeboxScreenStyles } from "./ShoeboxScreen.styles";
+import { AccountButton } from "@/features/auth/components/AccountButton";
 
 export function ShoeboxScreen() {
   const router = useRouter();
@@ -46,12 +47,16 @@ export function ShoeboxScreen() {
     void refetch();
   }
 
+  function handleAccount() {
+    router.push("/account");
+  }
+
   return (
     <Screen>
       <View style={shoeboxScreenStyles.content}>
         <View style={shoeboxScreenStyles.header}>
-          <View style={shoeboxScreenStyles.titleRow}>
-            <Text style={shoeboxScreenStyles.title}>Shoebox</Text>
+          <View style={shoeboxScreenStyles.headerActions}>
+            <AccountButton onPress={handleAccount} />
 
             <Pressable
               accessibilityHint="Opens your photo library"
